@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: build an image for the react app
-        run: docker build -it lyoshas/react-test -f ./client/Dockerfile.dev ./client
+        run: docker build -t lyoshas/react-test -f ./client/Dockerfile.dev ./client
       - name: run react tests
         run: docker run -e CI=true lyoshas/react-test npm test
       - name: create a production version for the react project
