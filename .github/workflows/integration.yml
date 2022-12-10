@@ -22,7 +22,9 @@ jobs:
       - name: create a production version for the worker
         run: docker build -t lyoshas/multi-worker ./worker
       - name: log in to Docker Hub
-        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | \
+          docker login -u "${{ secrets.DOCKER_ID }}" --password-stdin
       - name: push lyoshas/multi-client to Docker Hub
         run: docker push lyoshas/multi-client
       - name: push lyoshas/multi-nginx to Docker Hub
