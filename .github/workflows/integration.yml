@@ -1,0 +1,33 @@
+name: Integrate
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build an image for the react app
+        run: docker build -it lyoshas/react-test -f ./client/Dockerfile.dev ./client
+      - name: run react tests
+        run: docker run -e CI=true lyoshas/react-test npm test
+      - name: create a production version for the react project
+        run: docker build -t lyoshas/multi-client ./client
+      - name: create a production version for nginx
+        run: docker build -t lyoshas/multi-nginx ./nginx
+      - name: create a production version for API
+        run: docker build -t lyoshas/multi-server ./server
+      - name: create a production version for the worker
+        run: docker build -t lyoshas/multi-worker ./worker
+      - name: log in to Docker Hub
+        run: echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+      - name: push lyoshas/multi-client to Docker Hub
+        run: docker push lyoshas/multi-client
+      - name: push lyoshas/multi-nginx to Docker Hub
+        run: docker push lyoshas/multi-nginx
+      - name: push lyoshas/multi-server to Docker Hub
+        run: docker push lyoshas/multi-server
+      - name: push lyoshas/multi-worker to Docker Hub
+        run: docker push lyoshas/multi-worker
