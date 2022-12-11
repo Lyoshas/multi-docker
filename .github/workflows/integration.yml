@@ -33,3 +33,18 @@ jobs:
         run: docker push lyoshas/multi-server
       - name: push lyoshas/multi-worker to Docker Hub
         run: docker push lyoshas/multi-worker
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+    steps:
+      - name: show docker context create ecs help
+        run: docker context create ecs --help
+      - name: create AWS ECS Docker context
+        run: docker context create ecs myecscontext --from-env
+      - name: set the newly created context as the default
+        run: docker context use myecscontext
+      - name: run docker-compose-prod.yml
+        run: docker-compose -f docker-compose-prod.yml up --build

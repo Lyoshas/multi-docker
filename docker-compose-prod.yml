@@ -7,12 +7,7 @@ services:
   redis:
     image: 'redis:latest'
   api:
-    build:
-      dockerfile: Dockerfile
-      context: ./server
-    volumes:
-      - /app/node_modules
-      - ./server:/app
+    image: lyoshas/multi-server
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -24,26 +19,14 @@ services:
   client:
     environment:
       - WDS_SOCKET_PORT=0
-    build:
-      dockerfile: Dockerfile
-      context: ./client
-    volumes:
-      - /app/node_modules
-      - ./client:/app
+    image: lyoshas/multi-client
   worker:
-    build:
-      dockerfile: Dockerfile
-      context: ./worker
-    volumes:
-      - /app/node_modules
-      - ./worker:/app
+    image: lyoshas/multi-worker
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
   nginx:
-    build:
-      dockerfile: Dockerfile
-      context: ./nginx
+    image: lyoshas/multi-nginx
     restart: always
     ports:
       - '80:80'
