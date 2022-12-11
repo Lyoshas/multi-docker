@@ -40,13 +40,20 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
     steps:
+      - uses: actions/checkout@v2
+      - name: check docker version before the update
+        run: docker --version
+      - name: Update docker-compose version
+        run: sudo curl -L https://raw.githubusercontent.com/docker/compose-cli/main/scripts/install/install_linux.sh | sudo sh
+      - name: check docker version after the update
+        run: docker --version
       - name: show docker context create ecs help
         run: docker context create ecs --help
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
       - name: create AWS ECS Docker context
         run: docker context create ecs myecscontext --from-env
       - name: set the newly created context as the default
         run: docker context use myecscontext
       - name: run docker-compose-prod.yml
-        run: docker-compose -f docker-compose-prod.yml up --build
+        run: docker compose -f docker-compose-prod.yml up --build -d
+      - name: debugging
+        uses: mxschmitt/action-tmate@v3
