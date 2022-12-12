@@ -61,6 +61,7 @@ jobs:
           -- '
           cd ./multi-docker &&
           git pull origin main &&
+          docker-compose -f docker-compose-prod.yml down &&
           docker-compose -f docker-compose-prod.yml up -d --build
           ' 
       # - name: Change directory to ./multi-docker
