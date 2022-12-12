@@ -10,21 +10,19 @@ jobs:
     env:
       GOOGLE_CLOUD_CONFIG_FILE_CONTENTS: ${{ secrets.GOOGLE_CLOUD_CONFIG_FILE_CONTENTS }}
     steps:
-      - name: echo "hi"
-        run: echo "hi"
-      # - name: Create a file that stores Google Cloud SSH configuration
-      #   run: echo "$GOOGLE_CLOUD_CONFIG_FILE_CONTENTS" > google-cloud-config.json
-      # - name: Activate this configuration file
-      #   run: gcloud auth activate-service-account --key-file=google-cloud-config.json
-      # - name: Connect to the remote VM and deploy the project
-      #   run: >-
-      #     gcloud compute ssh 
-      #     --zone "europe-north1-a" 
-      #     "${{ secrets.GOOGLE_CLOUD_DEFAULT_USER }}@instance-1" 
-      #     --project "healthy-display-371312" 
-      #     -- '
-      #     cd ./multi-docker &&
-      #     git pull origin main &&
-      #     docker-compose -f docker-compose-prod.yml down &&
-      #     docker-compose -f docker-compose-prod.yml up -d --build
-      #     ' 
+      - name: Create a file that stores Google Cloud SSH configuration
+        run: echo "$GOOGLE_CLOUD_CONFIG_FILE_CONTENTS" > google-cloud-config.json
+      - name: Activate this configuration file
+        run: gcloud auth activate-service-account --key-file=google-cloud-config.json
+      - name: Connect to the remote VM and deploy the project
+        run: >-
+          gcloud compute ssh 
+          --zone "europe-north1-a" 
+          "${{ secrets.GOOGLE_CLOUD_DEFAULT_USER }}@instance-1" 
+          --project "healthy-display-371312" 
+          -- '
+          cd ./multi-docker &&
+          git pull origin main &&
+          docker-compose -f docker-compose-prod.yml down &&
+          docker-compose -f docker-compose-prod.yml up -d --build
+          ' 
